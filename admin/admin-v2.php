@@ -1,7 +1,7 @@
 <?php include "admin-header-start.php" ?>
 
-    <link rel="stylesheet" href="../css/style-v2.css">
-    <link rel="stylesheet" href="../css/style-v2_input.css">
+    <link rel="stylesheet" href="../css/style-v1.css">
+    <link rel="stylesheet" href="../css/style-v1_input.css">
 
 <?php include "admin-header-end.php" ?>
 
@@ -12,120 +12,44 @@
 
             <div class="top">
                 <div class="content">
-                    <input type="text" class="text" id="Game" value="Game" database-variable></input>
-                    <div class="set_counter_container">
-                        <span>Satz:</span>
-                        <input type="number" id="Set_Count" min="1" max="7" database-variable>
-                    </div>
-                </div>
-                <div class="set_controls_container">
-                    <button class="button neutral" change="+1">+1</button>
-                    <button class="button neutral" change="-1">-1</button>
+                    <input type="text" id="title" value="Title" database-variable>
                 </div>
             </div>
 
             <div class="center">
-                <div class="teams">
-                    <div class="team">
-                        <input type="text" class="teamname" id="A_Teamname" value="A Teamname" database-variable></input>
-                        <div class="container">
-                            <input type="text" class="players" id="A_Players" value="A Players" database-variable></input>
-                            <input type="color" class="color-indicator" id="A_Color" database-variable></input>
-                        </div>
-                        
-                    </div>
-                    <div class="team">
-                        <input type="text" class="teamname" id="B_Teamname" value="B Teamname" database-variable></input>
-                        <div class="container">
-                            <input type="text" class="players" id="B_Players" value="B Players" database-variable></input>
-                            <input type="color" class="color-indicator" id="B_Color" database-variable></input>
-                        </div>
-                    </div>
-                </div>
-                <div class="scores">
-                    <div class="team_score">
-                        <div class="set active">
-                            <div class="counter a_team set1">
-                                <input type="number" class="score" id="A_Score_1" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set1">
-                                <input type="number" class="score" id="B_Score_1" value="0" database-variable></input>
-                            </div>
-                        </div>
-                        <div class="set">
-                            <div class="counter a_team set2">
-                                <input type="number" class="score" id="A_Score_2" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set2">
-                                <input type="number" class="score" id="B_Score_2" value="0" database-variable></input>
-                            </div>
-                        </div>
-                        <div class="set">
-                            <div class="counter a_team set3">
-                                <input type="number" class="score" id="A_Score_3" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set3">
-                                <input type="number" class="score" id="B_Score_3" value="0" database-variable></input>
-                            </div>
-                        </div>
-                        <div class="set">
-                            <div class="counter a_team set4">
-                                <input type="number" class="score" id="A_Score_4" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set4">
-                                <input type="number" class="score" id="B_Score_4" value="0" database-variable></input>
-                            </div>
-                        </div>
-                        <div class="set">
-                            <div class="counter a_team set5">
-                                <input type="number" class="score" id="A_Score_5" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set5">
-                                <input type="number" class="score" id="B_Score_5" value="0" database-variable></input>
-                            </div>
-                        </div>
-                        <div class="set">
-                            <div class="counter a_team set6">
-                                <input type="number" class="score" id="A_Score_6" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set6">
-                                <input type="number" class="score" id="B_Score_6" value="0" database-variable></input>
-                            </div>
-                        </div>
-                        <div class="set">
-                            <div class="counter a_team set7">
-                                <input type="number" class="score" id="A_Score_7" value="0" database-variable></input>
-                            </div>
-                            <div class="counter b_team set7">
-                                <input type="number" class="score" id="B_Score_7" value="0" database-variable></input>
-                            </div>
-                        </div>
+                <div class="heading_container">
+                    <input type="text" id="heading" value="Heading" database-variable>
+                    <!-- <input type="text" id="RGX" value="1234" database-variable> -->
+                    <div class="rgx">
+                        <img id="normal" src="../img/rgx_small.png" alt="">
+                        <img id="pro" src="../img/rgxpro_small.png" alt="">
+                        <input type="text" id="RGX" value="1234" database-variable>
                     </div>
                 </div>
 
-                <div class="controls">
-            
-                    <div class="team_container">
-                        <button class="button add team_a" id="add_point_a" change="+1">+1</button>
-                        <button class="button remove team_a" id="remove_point_a" change="-1">-1</button>
-                    </div>
-                    <div class="team_container">
-                        <button class="button add team_b" id="add_point_b" change="+1">+1</button>
-                        <button class="button remove team_b" id="remove_point_b" change="-1">-1</button>
-                    </div>
-                    
-                </div>
-            </div>
+                <!-- <input type="text" id="text" value="Message" database-variable> -->
+                <textarea rows="5" cols="60" id="text" value="Message" placeholder="Text"></textarea>
 
-            <div class="bottom">
-                <div class="content">
-                    <input type="text" class="text" id="Occasion" value="" database-variable></input>
-                    <input type="text" class="text" id="Mode" value="" database-variable></input>
+                <div class="checkbox_input">
+                    <span>Show Heading</span>
+                    <input type="checkbox" id="showHeading" value="" database-variable>
                 </div>
-                <button id="reset_scores">Reset Scores</button>
+
+                <div class="checkbox_input">
+                    <span>Show RGX</span>
+                    <input type="checkbox" id="showRGX" value="" database-variable>
+                </div>
+
+                <div class="checkbox_input">
+                    <span>Is Pro</span>
+                    <input type="checkbox" id="isPro" value="" database-variable>
+                </div>
+                
             </div>
 
         </div>
+
+        <button id="toggle">Einblenden</button>
 
         
     </div>

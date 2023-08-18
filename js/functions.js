@@ -43,12 +43,12 @@ function isLighter(hexColor) {
 
 
 // function that inserts the data from the database in the html
-function insert_live_data(board_id, type) {
+function insert_live_data(channel_id, type) {
     // receive data from GET request
     $.ajax({
         type: "GET",
         data: {
-            ID: board_id,
+            ID: channel_id,
         },
         url: "../php/get_data.php",
         success: function (data) {
@@ -58,77 +58,49 @@ function insert_live_data(board_id, type) {
     
                 // Only use real DB returns - DB also returns values with a number count instead of key name (e.g. 0: 'teamname')
                 if (!isNumeric(key)) {
-    
-                    // Handle background special variables
-                    if (key == "Set_Count") {
-                        active_set = value;
-                        if (type == "admin") {
-                            $('#Set_Count').val(active_set);
-                        } else {
-                            a_score = data[0]['A_Score_' + active_set];
-                            b_score = data[0]['B_Score_' + active_set];
-                            $('#A_Score_Active').text(a_score);
-                            $('#B_Score_Active').text(b_score);
-                        }
-                    } else if (key == "Show_Team_Score") {
-                        show_team_score = value;
-                    } else if (key == "Show_Color") {
-                        show_color = value;
-                        
-                    // Handly everything else
+
+                    //convert booleans
+                    if (value == 0) {
+                        bool_value = false;
+                    } else if (value == 1) {
+                        bool_value = true;
+                    }
+
+                    if (key == "visible") {
+                        visible = value;
+                    } else if (key == "showRGX") {
+                        showRGX = value;
+                        $('#showRGX').prop('checked', bool_value);
+                    } else if (key == "isPro") {
+                        isPro = value;
+                        $('#isPro').prop('checked', bool_value);
+                    } else if (key == "showHeading") {
+                        showHeading = value;
+                        $('#showHeading').prop('checked', bool_value);
                     } else {
                         // Go through all html elements that have an id
                         $.each($("*[id]"), function(j, elem) {
-    
+
                             // extract id value
                             var id = $(elem).attr("id")
-    
+
                             // Check if element id matches key name
                             if (id == key) {
-    
-                                // Handle team colors
-                                if (key.toLowerCase().includes("color")) {
-                                    if (type == "board") {
-                                        $('html').css("--" + id, value)
-
-                                        if (isLight(rgb2hex(value))) {
-                                            $(elem).addClass('light');
-                                        } else {
-                                            $(elem).removeClass('light');
-                                        }
-
-                                        if (isLighter(rgb2hex(value))) {
-                                            console.log("yes: " + "team_" + id[0].toLowerCase());
-                                            $(".team_" + id[0].toLowerCase()).addClass('lighter');
-                                        } else {
-                                            $(".team_" + id[0].toLowerCase()).removeClass('lighter');
-                                        }
-
-                                        // if (id == "A_Color") {
-                                        //     $('#team_a').addClass
-                                        // }
-                                    } else if (type == "admin") {
-                                        $(elem).val(value);
+                                if (type == "stream") {
+                                    $(elem).text(value);
+                                    // make text smaller if it overflows
+                                    // console.log($(elem).text(), isEllipsisActive($(elem)));
+                                    while(isEllipsisActive($(elem))) {
+                                        fontSize = pareseInt($(elem).css('font-size'));
+                                        $(elem).css('font-size', fontSize - 1 + "px")
                                     }
-    
-                                // Handle everything else
-                                } else {
-                                    if (type == "board") {
-                                        $(elem).text(value);
-                                        // make text smaller if it overflows
-                                        // console.log($(elem).text(), isEllipsisActive($(elem)));
-                                        while(isEllipsisActive($(elem))) {
-                                            fontSize = pareseInt($(elem).css('font-size'));
-                                            $(elem).css('font-size', fontSize - 1 + "px")
-                                        }
-                                    } else if (type == "admin") {
-                                        $(elem).val(value);
-                                    }
+                                } else if (type == "admin") {
+                                    $(elem).val(value);
                                 }
-    
                             }
                         });
-                    }   
+
+                    }
                 }
             });
         }
@@ -136,128 +108,35 @@ function insert_live_data(board_id, type) {
 }
 
 
-// helper function to update the active set
-function update_set_visibilities_and_counter() {
-
-    var a_sets_won = 0;
-    var b_sets_won = 0;
-
-    // go through all html .set elements
-    $.each($('.set'), function(i, set) {
-        var $set = $(set);
-
-        // extract scores from this set
-        var $score_elems = $set.find('p.score');
-        var $score_team_a = $($score_elems[0]);
-        var $score_team_b = $($score_elems[1]);
-        var score_1 = Number($score_team_a.text());
-        var score_2 = Number($score_team_b.text());
-
-        // select set elements that are below the active set - finished sets
-        if (i+1 < active_set) {
-
-            // show and make not active
-            $set.show();
-            $set.removeClass('active');
-
-            // highlight winner team
-            // if first team has the higher score
-            if (score_1 > score_2) {
-                $score_team_a.removeClass('loser').addClass('winner');
-                $score_team_b.removeClass('winner').addClass('loser');
-                a_sets_won += 1;
-
-            // if second team has the higher score
-            } else if (score_1 < score_2) {
-                $score_team_a.removeClass('winner').addClass('loser');
-                $score_team_b.removeClass('loser').addClass('winner');
-                b_sets_won += 1;
-
-            // if scores are equal
-            } else {
-                $score_team_a.removeClass('winner').addClass('lose');
-                $score_team_b.removeClass('winner').addClass('loser');
-            }
-
-        // select active set
-        } else if (i+1 == active_set) {
-
-            // show and make active
-            $set.show();
-            $set.addClass('active');
-
-            // remove classes for finished sets
-            $score_team_a.removeClass('winner').removeClass('loser');
-            $score_team_b.removeClass('winner').removeClass('loser');
-        
-        // select sets above the active set
-        } else if (i+1 > active_set) {
-
-            // hide and make not active
-            $set.hide();
-            $set.removeClass('active');
-        }
-    });
-
-    set_set_counter(a_sets_won, b_sets_won);
-}
-
-
-function set_set_counter(a_sets_won, b_sets_won) {
-    $('#a_sets_won').text(a_sets_won);
-    $('#b_sets_won').text(b_sets_won);
-}
-
-
-// helper function to update if the team counter get's shown
-function update_team_counter_visibility() {
-    if (show_team_score == 1) {
-        $('.group_score').show();
-        $('.group-indicator').show();
-        $('#Show_Team_Score').prop("checked", true);
-    } else {
-        $('.group_score').hide();
-        $('.group-indicator').hide();
-        $('#Show_Team_Score').prop("checked", false);
-    }
-}
-
-
-// helper function to update if the team colors get shown
-function update_color_indicator_visibility() {
-    if (show_color == 1) {
-        $('.color-indicator').show();
-        $('#Show_Color').prop("checked", true);
-    } else {
-        $('.color-indicator').hide();
-        $('#Show_Color').prop("checked", false);
-    }
-}
-
 
 // function that uploads all the local data to the database
-function upload_local_data(board_id, elemList) {
-    active_set = $('#Set_Count').val();    
-
-    if ($('#Show_Team_Score').is(":checked")) {
-        show_team_score = 1
-    } else {
-        show_team_score = 0
-    }
-
-    if ($('#Show_Color').is(":checked")) {
-        show_color = 1
-    } else {
-        show_color = 0
-    }
-
+function upload_local_data(channel_id, elemList) {
  
+    if ($('#showRGX').is(":checked")) {
+        showRGX = 1
+    } else {
+        showRGX = 0
+    }
+
+    if ($('#isPro').is(":checked")) {
+        isPro = 1
+    } else {
+        isPro = 0
+    }
+
+    if ($('#showHeading').is(":checked")) {
+        showHeading = 1
+    } else {
+        showHeading = 0
+    }
+
     if (typeof elemList == 'undefined') {
         elemList = $("*[database-variable]");
     }
     
     var dataObject = {};
-    dataObject['ID'] = board_id;
+    dataObject['ID'] = channel_id;
+    dataObject['visible'] = visible;
     $.each($(elemList), function(i, elem) {
         var $elem = $(elem);
         var type = $elem.attr("type");
@@ -275,16 +154,37 @@ function upload_local_data(board_id, elemList) {
         dataObject[id] = value;
     });
 
+    console.log(dataObject);
+
     $.ajax({
         type: 'POST',
         url: '../php/update_data.php',
         data: dataObject,
         dataType: 'json',
     });
+}
 
-    update_set_visibilities_and_counter();
-    update_team_counter_visibility();
-    update_color_indicator_visibility();
+
+function update_RGX($rgx) {
+    if (showRGX == 1) {
+        $rgx.show();
+    } else {
+        $rgx.hide();
+    }
+
+    if (isPro == 1) {
+        $rgx.addClass('pro');
+    } else {
+        $rgx.removeClass('pro');
+    }
+}
+
+function update_heading($heading) {
+    if (showHeading == 1) {
+        $heading.show();
+    } else if (showHeading == 0) {
+        $heading.hide();
+    }
 }
 
 
@@ -292,8 +192,6 @@ function change_channel(channel, type) {
     insert_live_data(channel, type);
     // apply all the special variables - with a bit delay so the database values are safely loaded
     setTimeout(function() {
-        update_set_visibilities_and_counter();
-        update_team_counter_visibility();
-        update_color_indicator_visibility();
+        
     }, 500)
 }

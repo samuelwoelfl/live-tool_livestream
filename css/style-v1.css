@@ -19,18 +19,19 @@
 
 .wrapper {
   display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
+  flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  margin: 20px 20px 0px 20px;
+  height: 100%;
+  padding: 40px;
 }
 
-.board {
+.message {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   filter: drop-shadow(1px 3px 20px rgba(0, 0, 0, 0.15));
 }
 
@@ -56,27 +57,26 @@
   border-radius: 8px 8px 0px 0px;
 }
 
-.bottom .content {
-  background-color: var(--light-3);
-  border-radius: 0px 0px 8px 8px;
-  flex-direction: row;
-  gap: 8px;
-}
-
-.teamname, .text {
+.text {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.long-text {
+  font-size: 20px;
+  font-weight: 500;
+  max-width: 500px;
+  line-height: 120%;
+  font-family: 'Barlow' !important;
 }
 
 .top .content p {
   font-size: 17px;
   color: var(--text-primary);
-}
-
-.bottom .content p {
-  font-size: 17px;
-  color: var(--text-primary);
+  text-transform: uppercase;
 }
 
 .divider {
@@ -88,135 +88,62 @@
 
 .center {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: stretch;
   justify-content: flex-start;
-  padding: 8px 10px 8px 16px;
+  padding: 12px 18px 16px 18px;
   background-color: var(--white);
-  border-radius: 0px 8px 8px 0px;
+  border-radius: 8px;
   margin-top: -1px;
   margin-bottom: -1px;
+  gap: 8px;
+}
+
+.center .heading_container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+}
+
+.rgx {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 12px 6px 12px;
+  gap: 4px;
+  border-radius: 15px;
+  background-color: #e8e8e8;
+}
+
+.rgx img {
+  height: 18px;
+}
+
+.rgx.pro {
+  background-color: #000000;
+}
+
+.rgx.pro span, .rgx.pro input{
+  color: #ffffff;
+}
+
+.rgx #pro {
+  display: none;
+}
+
+.rgx.pro #normal {
+  display: none;
+}
+
+.rgx.pro #pro {
+  display: block;
 }
 
 .center * {
   font-family: 'Antonio';
-}
-
-.teams {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: flex-start;
-  gap: 8px;
-  margin-right: 28px;
-  min-width: 260px;
-  max-width: 350px;
-}
-
-.teams .team {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  padding-bottom: 1px;
-  max-width: 100%;
-  gap: 9px;
-}
-
-.teams .team:last-child {
-  padding-bottom: 5px;
-}
-
-.teams .team .color-indicator {
-  width: 6px;
-  height: 77%;
-  border-radius: 2px;
-  margin-top: 5px;
-  background-color: var(--text-primary);
-  border: 0px;
-  box-sizing: border-box;
-  margin-left: 0;
-}
-
-#A_Color {
-  background-color: var(--A_Color);
-}
-
-#B_Color {
-  background-color: var(--B_Color);
-}
-
-.teams .team .color-indicator.light {
-  border: 1px solid #bbbbbb;
-  box-sizing: content-box;
-  margin-left: -1px;
-  width: 5px;
-}
-
-.teams .team p {
-  font-size: 30px;
-  font-weight: 700;
-  max-width: 100%;
-}
-
-.counter {
-  font-size: 30px;
-  font-weight: 600;
-  height: 47px;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  border-radius: 4px;
-  padding-bottom: 4px;
-}
-
-.counter:not(.group) {
-  width: 48px;
-  background-color: var(--light-3);
-}
-
-.counter.group {
-  width: 36px;
-  background-color: var(--red-1);
-}
-
-.active .counter {
-  border: 2px solid var(--yellow);
-}
-
-.scores {
-  display: flex;
-  flex-direction: row;
-  gap: 20px;
-}
-
-.score.winner {
-  font-weight: 700;
-}
-
-.score.loser {
-  font-weight: 300;
-}
-
-.group_score {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.team_score {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-}
-
-.team_score .set {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .button {
@@ -232,35 +159,5 @@
   border-radius: 4px;
   padding-bottom: 4px;
   color: var(--white);
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.controls .team_container {
-  display: flex;
-  flex-direction: row;
-  gap: 4px;
-}
-
-.button.add {
-  background-color: #04b904;
-}
-
-.button.remove {
-  background-color: var(--red);
-  transition: .1s ease;
-}
-
-.button:hover {
-  opacity: .8;
-}
-
-.button:active {
-  opacity: .6;
-  transform: scale(.95);
 }
 

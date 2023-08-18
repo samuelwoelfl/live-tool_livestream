@@ -5,9 +5,15 @@
         $(document).ready(function() {
 
             // initialize variables for global usage
-            active_set = 1;
-            show_team_score = 0;
-            show_color = 0;
+            visible = 0;
+            showRGX = 1;
+            isPro = 0;
+            showHeading = 1;
+
+            var $rgx = $('.rgx');
+            var $heading = $('.heading_container');
+            var $visibility_button = $('#toggle');
+            var $checkboxes = $('input[type="checkbox"]')
 
             var $channel_input = $("#channel");
             var urlParams = new URLSearchParams(window.location.search);
@@ -22,9 +28,9 @@
             insert_live_data(url_id, "admin");
             // apply all the special variables - with a bit delay so the database values are safely loaded
             setTimeout(function() {
-                update_set_visibilities_and_counter();
-                update_team_counter_visibility();
-                update_color_indicator_visibility();
+                update_visibility_button();
+                update_heading($heading);
+                update_RGX($rgx);
             }, 750)
 
 
@@ -38,63 +44,29 @@
             // upload local data as any input values changes
             $('input:not([type=submit]), textarea').on('input', function() {
                 upload_local_data($channel_input.val(), [this]);
+                update_heading($heading);
+                update_RGX($rgx);
             });
 
 
-            // interaction for the score buttons
-            $('.controls .button').click(function() {
-                var $button = $(this);
-                var active_set_elem = $('.set.active'); // check which set is active - which determines which score will be changed
-                var change = Number($button.attr('change')); // set the change amount based on the attribute on the button
-                var score_elem;
-                var team;
-
-                // check for which team the button is
-                if ($button.hasClass('team_a')) {
-                    team = 0;
+            $visibility_button.click(function() {
+                if (visible == 1) {
+                    visible = 0;
                 } else {
-                    team = 1;
+                    visible = 1;
                 }
-
-                score_elem = active_set_elem.find('.score')[team] // find correct score element based on team
-                score_now = Number($(score_elem).val()); // check score right now
-                if (score_now + change >= 0) {
-                    $(score_elem).val(score_now + change); // update to new score
-                    upload_local_data($channel_input.val(), [score_elem]); // upload the new score
-                }
+                update_visibility_button();            
             });
 
 
-            $('.set_controls_container .button').click(function() {
-                var $button = $(this);
-                var $set_counter = $('#Set_Count');
-                var change = Number($button.attr('change'));
-
-                set_now = Number($set_counter.val()); // check set right now
-                if (set_now + change > 0 && set_now + change <= 7) {
-                    $set_counter.val(set_now + change); // update to new set
-                    upload_local_data($channel_input.val(), [$set_counter]); // upload the new set
+            function update_visibility_button() {
+                if (visible == 1) {
+                    $visibility_button.text('Ausblenden');
+                } else {
+                    $visibility_button.text('Einblenden');
                 }
-            });
-
-
-            // function for the reset scores button
-            $('#reset_scores').click(function() {
-
-                // reset all score values
-                $.each($("*[id]"), function(i, elem) {
-                    var id = $(elem).attr("id");
-                    if (id.toLowerCase().includes('score') && !id.toLowerCase().includes('show')) {
-                        $(elem).val(0);
-                    }
-                });
-
-                // reset the set count
-                $('#Set_Count').val(1);
-
-                // upload the reset changes
                 upload_local_data($channel_input.val());
-            });
+            }
 
         });
     </script>
